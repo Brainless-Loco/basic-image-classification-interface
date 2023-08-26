@@ -7,11 +7,9 @@ import Box  from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Image from 'next/image'
 
-import axios from 'axios';
+// import axios from 'axios';
 
-import { getStorage, ref, uploadBytes } from "firebase/storage";
-
-
+// import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 import { CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material'
 

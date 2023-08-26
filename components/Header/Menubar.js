@@ -15,7 +15,7 @@ export default function Menubar() {
       </Box>
       <Box sx={{width:'33%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center'}}>
           <Typography variant="h5" sx={{fontWeight:'bold',fontFamily:'monospace'}} gutterBottom>
-              {"Vegetable Classification"}
+              {"Classification"}
           </Typography>
       </Box>
       <Box sx={{width:'33%',height:'100%',display:'flex',alignItems:'center',justifyContent:'flex-end',paddingX:'10px'}}>

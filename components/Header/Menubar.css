@@ -1,0 +1,19 @@
+.ModelSummaryBtn{
+    font-weight: bold;
+    
+    color: white !important;
+    background-color: transparent;
+    border-width: 2px;
+    font-size: 12px;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    border:2px solid white;
+    border-radius: 7px;
+    font-weight: 500;
+    transition: all 0.5s ease;
+}
+.ModelSummaryBtn:hover{
+    background-color: white !important;
+    color: #061657 !important;
+}

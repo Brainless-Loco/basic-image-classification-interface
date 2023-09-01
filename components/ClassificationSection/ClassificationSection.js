@@ -7,9 +7,8 @@ import Box  from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Image from 'next/image'
 
-// import axios from 'axios';
+import axios from 'axios';
 
-// import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 import { CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material'
 
@@ -25,33 +24,56 @@ export default function ClassificationSection() {
     const [imageLink, setimageLink] = useState('')
 
     
-    const handleImageUpload = (event) => {
+    const handleImageUpload = async (event) => {
+        setpreditionResult('')
         const uploadedImage = event.target.files[0];
         setImage(URL.createObjectURL(uploadedImage));
     };
 
-    const uploadImgToFirebase= async () =>{
-                    
-        const storage = getStorage();
-        const storageRef = ref(storage, 'some-child');
-        uploadBytes(storageRef, image).then((snapshot) => {
-            console.log('Uploaded a blob or file!');
-        });
-      }
+    // 0d83d1de24f75ad4f0483a0dbd3e901a
 
-    const classify = ()=>{
-        // uploadImgToFirebase()
+    const uploadImgToFirebase= async () =>{
+
+        if(image== '/assets/simple.png') return;
+        const storageUrl = 'sudokuforever-b9936.appspot.com';
+        
+        const fileName = `to_be_classified`;
+        try {
+            const response = await fetch(
+              'https://firebasestorage.googleapis.com/v0/b/'+storageUrl+'/o?name='+fileName,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'image/jpeg' || 'image/png' || 'image/jpg',
+                },
+                body: await fetch(image).then((response) => response.blob()),
+              }
+             );
+             setimageLink('https://firebasestorage.googleapis.com/v0/b/sudokuforever-b9936.appspot.com/o/to_be_classified?alt=media')
+
+            } 
+            catch (error) {
+                console.error('Error uploading image:', error);
+            }
+            
+            
+        }
+        // console.log(imageLink)
+
+    const classify = async ()=>{
         if(imageLink=='' && image=='/assets/simple.png') return;
-        setloading(true)
-        setpreditionResult('')
-        setmodalVisible(true)
+        setloading(true);
+        setpreditionResult('');
+        setmodalVisible(true);
         const imgData = {
             url: imageLink!=''? imageLink:image
-          }
+        }
+
+        // 'https://loco-teachable-server-pkj7.vercel.app/classification'
 
         const apiEndpoint = 'https://loco-teachable-server-pkj7.vercel.app/classification'
 
-        fetch(apiEndpoint ,{
+        await fetch(apiEndpoint ,{
                 method:"POST",
                 headers:{
                     "content-type":"application/json",
@@ -66,6 +88,12 @@ export default function ClassificationSection() {
         setloading(false)
     }
 
+    useEffect(() => {
+        if(image!= '/assets/simple.png'){
+            uploadImgToFirebase()
+        }
+    }, [image])
+    
     
 
 
@@ -91,7 +119,7 @@ export default function ClassificationSection() {
                         label="Or Paste an Image Link"
                         variant="outlined"
                         value={imageLink}
-                        onChange={(e) => setimageLink(e.target.value)}
+                        onChange={(e) => {setimageLink(e.target.value); setpreditionResult('');}}
                         fullWidth
                         autoComplete="off"
                         sx={{marginTop:'20px'}}
@@ -109,26 +137,11 @@ export default function ClassificationSection() {
                 aria-describedby="alert-dialog-description"
                 fullWidth={'xl'}
             >
-                {
-                    loading&&
-                    <DialogContent sx={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-                        <Box sx={{width:'100%',textAlign:'center'}}>
-                            <CircularProgress size={70} sx={{color:'#1d274f',width:'100%',}}/>
-
-                        </Box>
-                        <Box sx={{width:'100%',textAlign:'center',marginTop:'10px'}}>
-                            <Typography sx={{color:'#1d274f',fontWeight:'bold'}}>
-                                Classifying
-                            </Typography>
-                        </Box>
-                    </DialogContent>
-                    }
-                    
                     <DialogTitle sx={{color:'#1d274f',fontWeight:'600'}} id="alert-dialog-title">
                             {"Classification Result"}
                     </DialogTitle>
                     {
-                        preditionResult!='potato' && preditionResult!='tomato'&&
+                        preditionResult!='potato' && preditionResult!='tomato'&& loading &&
                         <DialogContent sx={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
                             <Box sx={{width:'100%',textAlign:'center'}}>
                                 <CircularProgress size={70} sx={{color:'#1d274f',width:'100%',}}/>

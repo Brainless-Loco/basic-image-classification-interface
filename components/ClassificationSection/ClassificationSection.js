@@ -37,7 +37,7 @@ export default function ClassificationSection() {
         if(image== '/assets/simple.png') return;
         const storageUrl = 'sudokuforever-b9936.appspot.com';
         
-        const fileName = `to_be_classified`;
+        const fileName = `classify.jpg`;
         try {
             const response = await fetch(
               'https://firebasestorage.googleapis.com/v0/b/'+storageUrl+'/o?name='+fileName,
@@ -49,7 +49,7 @@ export default function ClassificationSection() {
                 body: await fetch(image).then((response) => response.blob()),
               }
              );
-             setimageLink('https://firebasestorage.googleapis.com/v0/b/sudokuforever-b9936.appspot.com/o/to_be_classified?alt=media')
+             setimageLink('https://firebasestorage.googleapis.com/v0/b/sudokuforever-b9936.appspot.com/o/classify.jpg?alt=media&token=6eeb4abc-fac5-4852-8fee-e3519c0dbd82')
 
             } 
             catch (error) {
@@ -66,8 +66,10 @@ export default function ClassificationSection() {
         setpreditionResult('');
         setmodalVisible(true);
         const imgData = {
-            url: imageLink!=''? imageLink:image
+            url: imageLink
         }
+
+        // console.log(imgData.url)
 
         // 'https://loco-teachable-server-pkj7.vercel.app/classification'
 
@@ -76,11 +78,14 @@ export default function ClassificationSection() {
         await fetch(apiEndpoint ,{
                 method:"POST",
                 headers:{
-                    "content-type":"application/json",
+                    'content-Type': 'application/json',
+                    'accept': 'application/json'
                 },
                 body:JSON.stringify(imgData)
             })
-            .then((res)=>res.json())
+            .then((res)=>
+                res.json()
+            )
             .then((data)=>{
             // console.log(data[0].class)
             setpreditionResult(data[0].class)
